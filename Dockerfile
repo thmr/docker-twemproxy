@@ -1,10 +1,7 @@
 # expected values in etcd
 #  - `/services/twemproxy/listen` : the host_ip:port the proxy will listen on
 #  - `/services/twemproxy/servers/<num>` : enumeration of the redis servers for 01-N servers, in the format of host_ip:port
-# example:
-# etcdctl set /services/twemproxy/listen 10.10.100.1:6000
-# etcdctl set /services/redis/01 10.10.100.11:6001
-# etcdctl set /services/redis/02 10.10.100.12:6002
+
 
 FROM jgoodall/ubuntu-confd
 
@@ -20,6 +17,12 @@ RUN apt-get -qy install libtool make automake
 RUN curl -qL https://twemproxy.googlecode.com/files/nutcracker-0.3.0.tar.gz | tar xzf -
 RUN cd nutcracker-0.3.0 && ./configure --enable-debug=log && make && mv src/nutcracker /twemproxy
 RUN cd / && rm -rf nutcracker-0.3.0
+
+etcdctl set /services/twemproxy/listen 0.0.0.0:6000
+etcdctl set /services/redis/01 redis:7000
+etcdctl set /services/redis/02 redis:7001
+etcdctl set /services/redis/03 redis:7002
+etcdctl set /services/redis/04 redis:7003
 
 # Set up run script
 ADD run.sh /run.sh
